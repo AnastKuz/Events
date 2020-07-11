@@ -13,6 +13,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::post('/participants', 'ParticipantsController@store');
+Route::patch('/participants/{participant}', 'ParticipantsController@update');
