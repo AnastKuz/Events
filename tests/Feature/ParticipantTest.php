@@ -13,16 +13,16 @@ class ParticipantTest extends TestCase
     /** @test */
     public function testAddParticipantInDB()
     {
-        $this->withoutExceptionHandling();
-
        $response = $this->post('participants', [
            'first_name' => 'David',
            'last_name' => 'Linch',
            'email' => 'davidlinch@gmail.com'
        ]);
 
-       $response->assertOk();
+       $participant = Participant::first();
+
        $this->assertCount(1, Participant::all());
+       $response->assertRedirect('participants/' . $participant->id);
     }
 
     /** @test */
@@ -61,6 +61,7 @@ class ParticipantTest extends TestCase
         $response->assertSessionHasErrors('email');
     }
 
+    /** @test */
     public function testUpdateParticipant()
     {
         $this->withoutExceptionHandling();
@@ -82,5 +83,24 @@ class ParticipantTest extends TestCase
         $this->assertEquals('Max', Participant::first()->first_name);
         $this->assertEquals('Ginger', Participant::first()->last_name);
         $this->assertEquals('maxginger@gmail.com', Participant::first()->email);
+        $response->assertRedirect('/participants/' . $participant->id);
+    }
+
+    /** @test */
+    public function testDeleteParticipant()
+    {
+        $this->withoutExceptionHandling();
+        $this->post('participants', [
+            'first_name' => 'David',
+            'last_name' => 'Linch',
+            'email' => 'davidlinch@gmail.com'
+        ]);
+
+        $participant = Participant::first();
+
+        $response = $this->delete('/participants/' . $participant->id);
+
+        $this->assertCount(0, Participant::all());
+        $response->assertRedirect('/participants');
     }
 }

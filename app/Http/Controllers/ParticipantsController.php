@@ -9,12 +9,23 @@ class ParticipantsController extends Controller
 {
     public function store()
     {
-        Participant::create($this->validateRequest());
+        $participant = Participant::create($this->validateRequest());
+
+        return redirect('participants/' . $participant->id);
     }
 
     public function update(Participant $participant)
     {
         $participant->update($this->validateRequest());
+
+        return redirect('participants/' . $participant->id);
+    }
+
+    public function destroy(Participant $participant)
+    {
+        $participant->delete();
+
+        return redirect('participants');
     }
 
     protected function validateRequest()
